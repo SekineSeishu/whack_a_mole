@@ -5,60 +5,53 @@ using TMPro;
 
 public class moleMove : MonoBehaviour
 {
-    private bool _hit;
-    private float time;
-    private float cooltime;
+    public bool _hit;
+    private float nowTime;
+    private float coolTime;
     private Vector3 topPosition;
-    private Vector3 bottomPosition;
+    [SerializeField]private Vector3 bottomPosition;
     private int nowScore;
     [SerializeField] private TMP_Text scoreText;
+
     // Start is called before the first frame update
     void Start()
     {
         _hit = false;
-        bottomPosition = gameObject.transform.position;
-        topPosition = bottomPosition + new Vector3(0,10,0);
+        bottomPosition = this.gameObject.transform.position;
+        topPosition = bottomPosition + new Vector3(0,1,0);
     }
 
     // Update is called once per frame
     void Update()
     {
-        time -= Time.deltaTime;
-        scoreText.text = nowScore.ToString();
+        nowTime -= Time.deltaTime;
+        scoreText.text = "Score:" + nowScore.ToString();
 
-        if (time >= 0.0f)
+        if (nowTime <= 0.0f)
         {
-            if (gameObject.transform.position != topPosition)
+            if (this.gameObject.transform.position != topPosition)
             {
-                transform.Translate(0, 1.0f, 0);
+                this.gameObject.transform.Translate(0, 0.2f, 0);
             }
         }
 
         if (!_hit)
         {
-            if (gameObject.transform.position != bottomPosition)
+            if (this.gameObject.transform.position != bottomPosition)
             {
-                transform.Translate(0, -1.0f, 0);
+                this.gameObject.transform.Translate(0, -0.2f, 0);
             }
-            else
-            {
-                cooltime = Random.Range(5f, 10f);
-                time = cooltime;
+                Debug.Log("Start!");
+                coolTime = Random.Range(5f, 10f);
+                nowTime = coolTime;
                 _hit = true;
-            }
 
         }
     }
-
-    private void OnTriggerEnter(Collider other)
+    public void OnHit()
     {
-        if (_hit)
-        {
-            if (Input.GetMouseButtonDown(1))
-            {
-                _hit = false;
-                time = 0;
-            }
-        }
+        nowScore++;
+        _hit = false;
+        nowTime = 0;
     }
 }
