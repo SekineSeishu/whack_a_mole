@@ -6,52 +6,86 @@ using TMPro;
 public class moleMove : MonoBehaviour
 {
     public bool _hit;
-    private float nowTime;
+    [SerializeField]private float nowTime;
     private float coolTime;
-    private Vector3 topPosition;
+    private float speed = 1f;
+    [SerializeField] private Vector3 topPosition;
+    [SerializeField] private bool work;
     [SerializeField]private Vector3 bottomPosition;
-    private int nowScore;
-    [SerializeField] private TMP_Text scoreText;
 
     // Start is called before the first frame update
     void Start()
     {
         _hit = false;
-        bottomPosition = this.gameObject.transform.position;
-        topPosition = bottomPosition + new Vector3(0,1,0);
+        work = false;
+        SetCoolTime();
+        bottomPosition = gameObject.transform.position;
+        topPosition = transform.position + new Vector3(0,1,0);
     }
 
     // Update is called once per frame
     void Update()
     {
         nowTime -= Time.deltaTime;
-        scoreText.text = "Score:" + nowScore.ToString();
-
         if (nowTime <= 0.0f)
         {
-            if (this.gameObject.transform.position != topPosition)
-            {
-                this.gameObject.transform.Translate(0, 0.2f, 0);
-            }
+            work = true;
+            _hit = true;
         }
 
+        if (_hit)
+        {
+            if (gameObject.transform.position.y <= topPosition.y)
+            {
+                if (work)
+                {
+                    MoveUpDown();
+                }
+            }
+            else
+            {
+                work = false;
+            }
+        }
         if (!_hit)
         {
-            if (this.gameObject.transform.position != bottomPosition)
+            if (gameObject.transform.position.y > bottomPosition.y)
             {
-                this.gameObject.transform.Translate(0, -0.2f, 0);
+                if (work)
+                {
+                    MoveUpDown();
+                }
             }
-                Debug.Log("Start!");
-                coolTime = Random.Range(5f, 10f);
-                nowTime = coolTime;
-                _hit = true;
-
+            else
+            {
+                work = false;
+            }
         }
+    }
+
+    void MoveUpDown()
+    {
+        float step = speed * Time.deltaTime;
+        if (_hit)
+        {
+            transform.position = Vector3.MoveTowards(transform.position, topPosition, step);
+        }
+        else if (!_hit)
+        {
+            transform.position = Vector3.MoveTowards(transform.position, bottomPosition, step);
+        }
+    }
+    void SetCoolTime()
+    {
+        Debug.Log("Start!");
+        coolTime = Random.Range(3f, 8f);
+        nowTime = coolTime;
     }
     public void OnHit()
     {
-        nowScore++;
+        Debug.Log("a");
+        work = true;
+        SetCoolTime();
         _hit = false;
-        nowTime = 0;
     }
 }
