@@ -23,7 +23,7 @@ public class GameManager : MonoBehaviour
     {
         time -= Time.deltaTime;
         scoreText.text = "Score:" + score.ToString();
-        timeText.text = "Time:" + time.ToString();
+        timeText.text = "Time:" + time.ToString("N0");
         if (time > 0)
         {
             if (Input.GetMouseButtonDown(0))
